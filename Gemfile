@@ -33,6 +33,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'simplecov'
   gem 'rspec-rails'
+  gem 'active_model_serializers'
 end
 
 group :development do
