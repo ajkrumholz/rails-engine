@@ -33,6 +33,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'simplecov'
   gem 'rspec-rails'
+  gem 'active_model_serializers'
+  gem 'jsonapi-serializer'
 end
 
 group :development do
@@ -47,6 +49,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'faker'
   gem 'database_cleaner'
+  gem 'pry'
 end
 
 
