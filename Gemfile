@@ -34,6 +34,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'rspec-rails'
   gem 'active_model_serializers'
+  gem 'jsonapi-serializer'
 end
 
 group :development do
@@ -48,6 +49,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'faker'
   gem 'database_cleaner'
+  gem 'pry'
 end
 
 
