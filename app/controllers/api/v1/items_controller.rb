@@ -2,7 +2,12 @@ module Api
   module V1
     class ItemsController < ApplicationController
       def index
-        items = ItemSerializer.new(Item.all)
+        if params[:merchant_id].present?
+          merchant = Merchant.find(params[:merchant_id])
+          items = ItemSerializer.new(merchant.items)
+        else
+          items = ItemSerializer.new(Item.all)
+        end
         render json: items.serializable_hash
       end
 

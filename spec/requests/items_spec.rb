@@ -6,28 +6,49 @@ RSpec.describe "Items", type: :request do
   let!(:item) { items.first }
 
   describe "items index" do
-    before :each do 
-      get "/api/v1/items"
+    describe 'all items index' do
+      before :each do 
+        get "/api/v1/items"
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns all items' do
+        expect(json).to_not be_empty
+        expect(json[:data].count).to eq(10)
+      end
+
+      it 'returns attributes for each item' do
+        items.each_with_index do |item, i|
+          subject = json[:data][i]
+          expect(subject[:id]).to eq(item.id.to_s)
+          expect(subject[:type]).to eq('item')
+          expect(subject[:attributes][:name]).to eq(item.name)
+          expect(subject[:attributes][:description]).to eq(item.description)
+          expect(subject[:attributes][:unit_price]).to eq(item.unit_price)
+          expect(subject[:attributes][:merchant_id]).to eq(item.merchant.id)
+        end
+      end
     end
 
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
-    end
+    describe 'merchant items index' do
+      let!(:other_merchant) { create :merchant }
+      let!(:other_items) { create_list(:item, 10, merchant: other_merchant)}
 
-    it 'returns all items' do
-      expect(json).to_not be_empty
-      expect(json[:data].count).to eq(10)
-    end
+      before { get "/api/v1/merchants/#{merchant.id}/items" }
 
-    it 'returns attributes for each item' do
-      items.each_with_index do |item, i|
-        subject = json[:data][i]
-        expect(subject[:id]).to eq(item.id.to_s)
-        expect(subject[:type]).to eq('item')
-        expect(subject[:attributes][:name]).to eq(item.name)
-        expect(subject[:attributes][:description]).to eq(item.description)
-        expect(subject[:attributes][:unit_price]).to eq(item.unit_price)
-        expect(subject[:attributes][:merchant_id]).to eq(item.merchant.id)
+      it 'returns all items from a given merchant' do
+        expect(Item.all.count).to eq(20)
+        expect(json[:data].count).to eq(10)
+      end
+
+      it 'does not return items from another merchant' do
+        json[:data].each do |item|
+          expect(item[:attributes][:merchant_id]).to eq(merchant.id)
+          expect(item[:attributes][:merchant_id]).not_to eq(other_merchant.id)
+        end
       end
     end
   end
