@@ -2,12 +2,7 @@ module Api
   module V1
     class ItemsController < ApplicationController
       def index
-        if params[:merchant_id].present?
-          merchant = Merchant.find(params[:merchant_id])
-          items = ItemSerializer.new(merchant.items)
-        else
-          items = ItemSerializer.new(Item.all)
-        end
+        items = ItemSerializer.new(Item.all)
         render_json(items)
       end
 
@@ -32,10 +27,30 @@ module Api
         render json: item_to_delete.serializable_hash
       end
 
+      def update
+        item = Item.find(params[:id])
+        merchant_id = params[:item][:merchant_id]
+        if merchant_id
+          merchant = Merchant.find(merchant_id)
+        else
+          merchant = item.merchant
+        end
+
+        if !item || !merchant
+          render json: {data: nil}, status: 404
+        end
+
+        item.update(item_params)
+        if item.save
+          serializer = ItemSerializer.new(item)
+          render_json(serializer)
+        end
+      end
+
       private
 
       def item_params
-        params.require(:item).permit(:name, :description, :unit_price)
+        params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
       end
 
       def render_json(object)
