@@ -2,12 +2,7 @@ module Api
   module V1
     class ItemsController < ApplicationController
       def index
-        if params[:merchant_id].present?
-          merchant = Merchant.find(params[:merchant_id])
-          items = ItemSerializer.new(merchant.items)
-        else
-          items = ItemSerializer.new(Item.all)
-        end
+        items = ItemSerializer.new(Item.all)
         render_json(items)
       end
 
@@ -55,7 +50,7 @@ module Api
       private
 
       def item_params
-        params.require(:item).permit(:name, :description, :unit_price)
+        params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
       end
 
       def render_json(object)
