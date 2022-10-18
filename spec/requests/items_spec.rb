@@ -92,11 +92,24 @@ RSpec.describe "Items", type: :request do
     it 'creates a new item' do
       created_item = Item.last
       subject = json[:data][:attributes]
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(json).not_to be_empty
       expect(subject[:name]).to eq(Item.last.name)
       expect(subject[:description]).to eq(Item.last.description)
       expect(subject[:unit_price]).to eq(Item.last.unit_price)
+    end
+  end
+
+  describe 'item/destroy' do
+    let!(:merchant) { create :merchant }
+    let!(:item) { create :item, merchant: merchant}
+
+    before { delete "/api/v1/items/#{item.id}" }
+
+    it 'deletes an item given an id' do
+      expect(response).to have_http_status(200)
+      expect(json[:data][:id]).to eq(item.id.to_s)
+      expect { Item.find(item.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

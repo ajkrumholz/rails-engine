@@ -18,8 +18,18 @@ module Api
 
       def create
         merchant = Merchant.find(params[:item][:merchant_id])
-        item = ItemSerializer.new(merchant.items.create(item_params))
-        render_json(item)
+        item = merchant.items.create(item_params)
+        new_item = ItemSerializer.new(item)
+        if item.save
+          render json: new_item.serializable_hash, status: 201
+        end
+      end
+
+      def destroy
+        item = Item.find(params[:id])
+        item_to_delete = ItemSerializer.new(item)
+        item.destroy
+        render json: item_to_delete.serializable_hash
       end
 
       private
