@@ -87,3 +87,10 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+SimpleCov.configure do
+  add_filter 'spec/factories'
+  add_filter 'spec/rails_helper'
+  add_filter 'spec/spec_helper'
+  add_filter 'app/controllers/concerns'
+end
