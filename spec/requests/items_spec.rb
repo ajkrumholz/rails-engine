@@ -76,4 +76,27 @@ RSpec.describe "Items", type: :request do
       expect(subject[:merchant_id]).to eq(item.merchant.id)
     end
   end
+
+  describe 'items/create' do
+    let!(:merchant) { create :merchant }
+    let!(:item_params) { {
+      name: Faker::Commerce.product_name,
+      description: Faker::Marketing.buzzwords,
+      unit_price: 10.99,
+      merchant_id: merchant.id
+     } }
+    let!(:headers) { {"CONTENT_TYPE" => "application/json"} }
+
+    before { post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params) }
+
+    it 'creates a new item' do
+      created_item = Item.last
+      subject = json[:data][:attributes]
+      expect(response).to have_http_status(200)
+      expect(json).not_to be_empty
+      expect(subject[:name]).to eq(Item.last.name)
+      expect(subject[:description]).to eq(Item.last.description)
+      expect(subject[:unit_price]).to eq(Item.last.unit_price)
+    end
+  end
 end

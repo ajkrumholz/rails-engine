@@ -8,12 +8,28 @@ module Api
         else
           items = ItemSerializer.new(Item.all)
         end
-        render json: items.serializable_hash
+        render_json(items)
       end
 
       def show
         item = ItemSerializer.new(Item.find(params[:id]))
-        render json: item.serializable_hash
+        render_json(item)
+      end
+
+      def create
+        merchant = Merchant.find(params[:item][:merchant_id])
+        item = ItemSerializer.new(merchant.items.create(item_params))
+        render_json(item)
+      end
+
+      private
+
+      def item_params
+        params.require(:item).permit(:name, :description, :unit_price)
+      end
+
+      def render_json(object)
+        render json: object.serializable_hash
       end
     end    
   end
