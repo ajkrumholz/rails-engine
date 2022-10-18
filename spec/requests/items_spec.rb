@@ -112,4 +112,33 @@ RSpec.describe "Items", type: :request do
       expect { Item.find(item.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  describe 'item/update' do
+    let!(:merchant) { create :merchant }
+    let!(:item) { create :item, merchant: merchant }
+
+    let!(:item_params) { { name: 'Sonic Hamburger Milkshake' } }
+    let!(:headers) { { "CONTENT_TYPE" => 'application/json' } }
+
+    it 'updates an attribute for an item' do
+      put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+      expect(response).to be_successful
+      expect(json[:data][:id]).to eq(item.id.to_s)
+      expect(json[:data][:attributes][:name]).to eq('Sonic Hamburger Milkshake')
+    end
+
+    it 'will return 404 if nonexistent id is provided' do
+      put "/api/v1/items/10402941", headers: headers, params: JSON.generate(item: item_params)
+
+      expect(response).to have_http_status(404)
+      expect(json[:message]).to eq "Couldn't find Item with 'id'=10402941"
+    end
+
+    it 'will return 404 if bad merchant id provided' do
+      item_params = { name: 'Sonic Hamburger Milkshake', merchant_id: 14029291 }
+      put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+
+      expect(response).to have_http_status(404)
+    end
+  end
 end
