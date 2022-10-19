@@ -18,6 +18,14 @@ class ErrorSerializer
     handle_error("Could not locate resource with name like #{name}")
   end
 
+  def self.negative_price
+    handle_error("Query price must be at least 0")
+  end
+
+  def self.min_greater
+    handle_error("Max price must be greater than min price")
+  end
+  
   private
 
   def self.handle_error(message)

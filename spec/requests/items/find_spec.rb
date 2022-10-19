@@ -83,6 +83,22 @@ RSpec.describe 'Item Searches' do
         expect(found_items).to include(item_2.name, item_1.name)
         expect(found_items).not_to include(item_3.name, item_4.name)
       end
+
+      describe 'sad paths' do
+        it 'returns an error if a negative price is specified' do
+          get "#{uri}?min_price=-5"
+          expect(json[:data][:error]).to include("Query price must be at least 0")
+          get "#{uri}?min_price=-5"
+          expect(json[:data][:error]).to include("Query price must be at least 0")
+          get "#{uri}?min_price=-5&max_price=10"
+          expect(json[:data][:error]).to include("Query price must be at least 0")
+        end
+
+        it 'returns an error if min_price > max_price' do
+          get "#{uri}?min_price=10&max_price=5"
+          expect(json[:data][:error]).to include("Max price must be greater than min price")
+        end
+      end
     end
   end
 end
