@@ -100,5 +100,18 @@ RSpec.describe 'Item Searches' do
         end
       end
     end
+
+    describe 'sad path - both params present' do
+      
+      it 'returns an error when price and name searched together' do
+        message = "Cannot search name and price together"
+        get "#{uri}?name=sandy&max_price=5"
+        expect(json[:data][:error]).to include(message)
+        get "#{uri}?name=sandy&min_price=5"
+        expect(json[:data][:error]).to include(message)
+        get "#{uri}?name=sandy&min_price=5&max_pric=10"
+        expect(json[:data][:error]).to include(message)
+      end
+    end
   end
 end

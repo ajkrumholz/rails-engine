@@ -19,6 +19,10 @@ class ErrorSerializer
   def self.min_greater
     handle_error("Max price must be greater than min price")
   end
+
+  def self.invalid_search
+    handle_error("Cannot search name and price together")
+  end
   
   private
 

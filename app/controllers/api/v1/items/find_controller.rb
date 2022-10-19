@@ -31,7 +31,7 @@ module Api
               render json: ItemSerializer.new(result)
             end
           elsif params[:max_price].present? || params[:min_price].present?
-            #bad search error
+            render json: ErrorSerializer.invalid_search and return
           else
             result = Item.where("name ILIKE ?", "%#{params[:name]}%").order(:name)
             if result.empty?
