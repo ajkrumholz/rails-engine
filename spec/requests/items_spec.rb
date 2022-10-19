@@ -24,7 +24,7 @@ RSpec.describe "Items", type: :request do
         expect(subject[:type]).to eq('item')
         expect(subject[:attributes][:name]).to eq(item.name)
         expect(subject[:attributes][:description]).to eq(item.description)
-        expect(subject[:attributes][:unit_price]).to eq(item.unit_price)
+        expect(subject[:attributes][:unit_price]).to eq(item.unit_price.to_s)
         expect(subject[:attributes][:merchant_id]).to eq(item.merchant.id)
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe "Items", type: :request do
 
       expect(subject[:name]).to eq(item.name)
       expect(subject[:description]).to eq(item.description)
-      expect(subject[:unit_price]).to eq(item.unit_price)
+      expect(subject[:unit_price]).to eq(item.unit_price.to_s)
       expect(subject[:merchant_id]).to eq(item.merchant.id)
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe "Items", type: :request do
       expect(json).not_to be_empty
       expect(subject[:name]).to eq(Item.last.name)
       expect(subject[:description]).to eq(Item.last.description)
-      expect(subject[:unit_price]).to eq(Item.last.unit_price)
+      expect(subject[:unit_price]).to eq(Item.last.unit_price.to_s)
     end
   end
 
