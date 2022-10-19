@@ -22,6 +22,12 @@ RSpec.describe 'Merchant searches' do
     end
 
     describe 'sad paths' do
+      it 'returns an error if merchant cannot be found' do
+        get '/api/v1/merchants/find?name=Boris'
+        expect(json).to have_key(:data)
+        expect(json[:data][:error]).to include("Could not locate merchant with name like Boris")
+      end
+      
       it 'returns an error if missing parameters' do
         get '/api/v1/merchants/find'
         expect(json[:data][:message]).to eq("Could not complete query")

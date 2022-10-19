@@ -16,7 +16,11 @@ module Api
             render json: ErrorSerializer.missing_parameter
           else
             found_merchant = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name).first
-            render json: MerchantSerializer.new(found_merchant)
+            if found_merchant.nil?
+              render json: ErrorSerializer.no_match(params[:name])
+            else
+              render json: MerchantSerializer.new(found_merchant)
+            end
           end
         end
       end

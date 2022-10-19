@@ -14,6 +14,10 @@ class ErrorSerializer
     handle_error("Parameter cannot be missing")
   end
 
+  def self.no_match(name)
+    handle_error("Could not locate merchant with name like #{name}")
+  end
+
   private
 
   def self.handle_error(message)
