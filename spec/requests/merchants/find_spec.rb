@@ -25,7 +25,7 @@ RSpec.describe 'Merchant searches' do
       it 'returns an error if merchant cannot be found' do
         get '/api/v1/merchants/find?name=Boris'
         expect(json).to have_key(:data)
-        expect(json[:data][:error]).to include("Could not locate merchant with name like Boris")
+        expect(json[:data][:error]).to include("Could not locate resource with name like Boris")
       end
       
       it 'returns an error if missing parameters' do

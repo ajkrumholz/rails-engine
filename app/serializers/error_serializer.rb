@@ -15,7 +15,7 @@ class ErrorSerializer
   end
 
   def self.no_match(name)
-    handle_error("Could not locate merchant with name like #{name}")
+    handle_error("Could not locate resource with name like #{name}")
   end
 
   private
