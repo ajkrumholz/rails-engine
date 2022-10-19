@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2022_10_17_110306) do
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.decimal "unit_price", precision: 2
+    t.decimal "unit_price", precision: 8, scale: 2
     t.bigint "merchant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

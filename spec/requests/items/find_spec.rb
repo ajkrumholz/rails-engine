@@ -2,13 +2,14 @@ require 'rails_helper'
 
 RSpec.describe 'Item Searches' do
   describe 'get item/find_all' do
+    let!(:merchant) { create :merchant}
+    let!(:other_merchant) { create :merchant }
+    let!(:uri) { '/api/v1/items/find_all'}
+
     describe 'searching name by fragment' do
-      let!(:merchant) { create :merchant}
-      let!(:other_merchant) { create :merchant }
       let!(:item_1) { create :item, name: 'sandy beach', description: 'granules', merchant: merchant}
       let!(:item_2) { create :item, name: 'rocks', description: 'little pebbles', merchant: merchant }
       let!(:item_3) { create :item, name: 'after dinner mint', description: 'Sand-dollar minties', merchant: other_merchant}
-      let!(:uri) { '/api/v1/items/find_all'}
 
       it 'finds all items matching a query' do
         get "#{uri}?name=sand"
@@ -50,6 +51,37 @@ RSpec.describe 'Item Searches' do
           expect(json[:data][:message]).to eq("Could not complete query")
           expect(json[:data][:error]).to include("Parameter cannot be missing")
         end
+      end
+    end
+
+    describe 'searching item by price' do
+      let!(:item_1) { create :item, merchant: merchant, unit_price: 10.99}
+      let!(:item_2) { create :item, merchant: merchant, unit_price: 20.99}
+      let!(:item_3) { create :item, merchant: other_merchant, unit_price: 4.99}
+
+      it 'finds items below a maximum price' do
+        get "#{uri}?max_price=20"
+        expect(response).to be_successful
+        expect(json).to_not be_empty
+        found_items = json[:data].map { |item| item[:attributes][:name] }
+        expect(found_items).to_not be_empty
+        expect(found_items).to include(item_1.name, item_3.name)
+        expect(found_items).not_to include(item_2.name)
+      end
+
+      it 'finds items above a min price' do
+        get "#{uri}?min_price=5"
+        found_items = json[:data].map { |item| item[:attributes][:name] }
+        expect(found_items).to include(item_2.name, item_1.name)
+        expect(found_items).not_to include(item_3.name)
+      end
+
+      it 'finds items between a min and max price' do
+        item_4 = create(:item, merchant: merchant, unit_price: 25.99)
+        get "#{uri}?min_price=5&max_price=25"
+        found_items = json[:data].map { |item| item[:attributes][:name] }
+        expect(found_items).to include(item_2.name, item_1.name)
+        expect(found_items).not_to include(item_3.name, item_4.name)
       end
     end
   end
