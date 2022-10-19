@@ -20,6 +20,20 @@ RSpec.describe 'Merchant searches' do
       get '/api/v1/merchants/find?name=Shrimp'
       expect(json[:data][:attributes][:name]).to eq(blue.name)
     end
+
+    describe 'sad paths' do
+      it 'returns an error if missing parameters' do
+        get '/api/v1/merchants/find'
+        expect(json[:data][:message]).to eq("Could not complete query")
+        expect(json[:data][:error]).to include("Parameter cannot be missing")
+      end
+
+      it 'returns an error if name is empty' do
+        get '/api/v1/merchants/find?name='
+        expect(json[:data][:message]).to eq("Could not complete query")
+        expect(json[:data][:error]).to include("Parameter cannot be missing")
+      end
+    end
   end
 
   describe 'get merchant/find_all' do

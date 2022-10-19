@@ -3,13 +3,21 @@ module Api
     module Merchants
       class FindController < ApplicationController
         def index
-          found_merchants = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name)
-          render json: MerchantSerializer.new(found_merchants)
+          if !params[:name].present?
+            render json: ErrorSerializer.missing_parameter
+          else
+            found_merchants = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name)
+            render json: MerchantSerializer.new(found_merchants)
+          end
         end
 
         def show
-          found_merchant = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name).first
-          render json: MerchantSerializer.new(found_merchant)
+          if !params[:name].present?
+            render json: ErrorSerializer.missing_parameter
+          else
+            found_merchant = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name).first
+            render json: MerchantSerializer.new(found_merchant)
+          end
         end
       end
     end
