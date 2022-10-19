@@ -33,7 +33,7 @@ module Api
           elsif params[:max_price].present? || params[:min_price].present?
             #bad search error
           else
-            result = Item.where("name || description ILIKE ?", "%#{params[:name]}%").order(:name)
+            result = Item.where("name ILIKE ?", "%#{params[:name]}%").order(:name)
             if result.empty?
               render json: ErrorSerializer.no_match(params[:name])
             else

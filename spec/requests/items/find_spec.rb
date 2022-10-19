@@ -9,7 +9,7 @@ RSpec.describe 'Item Searches' do
     describe 'searching name by fragment' do
       let!(:item_1) { create :item, name: 'sandy beach', description: 'granules', merchant: merchant}
       let!(:item_2) { create :item, name: 'rocks', description: 'little pebbles', merchant: merchant }
-      let!(:item_3) { create :item, name: 'after dinner mint', description: 'Sand-dollar minties', merchant: other_merchant}
+      let!(:item_3) { create :item, name: 'after dinner sand mint', description: 'Sand-dollar minties', merchant: other_merchant}
 
       it 'finds all items matching a query' do
         get "#{uri}?name=sand"
