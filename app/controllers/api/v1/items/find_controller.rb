@@ -5,17 +5,22 @@ module Api
         before_action :set_vars
                 
         def index
-          validate_params
-          if name_query
-            result = Item.name_query(@name)
-          elsif min_query
-            result = Item.min_query(@min_price)
-          elsif max_query
-            result = Item.max_query(@max_price)
-          elsif range_query
-            result = Item.range_query(@min_price, @max_price)
+          if params_valid?
+            if name_query
+              result = Item.name_query(@name)
+            elsif min_query
+              result = Item.min_query(@min_price)
+            elsif max_query
+              result = Item.max_query(@max_price)
+            elsif range_query
+              result = Item.range_query(@min_price, @max_price)
+            end
+            if result.blank?
+              render json: ErrorSerializer.no_item and return
+            else
+              render json: ItemSerializer.new(result)
+            end
           end
-          render json: ItemSerializer.new(result)
         end
 
         private
@@ -24,46 +29,53 @@ module Api
           @name = params[:name]
           @min_price = params[:min_price]
           @max_price = params[:max_price]
+          @valid_params = true
         end
 
-        def validate_params
+        def params_valid?
           name_and_price?
           negative_price?(@min_price)
           negative_price?(@max_price)
           min_greater
           missing_query
           blank_query
+          @valid_params
         end
 
         def name_and_price?
           if @name.present? && (@min_price.present? || @max_price.present?)
-            render json: ErrorSerializer.invalid_search, status: 400
+            @valid_params = false
+            render json: ErrorSerializer.invalid_search, status: 400 and return
           end
         end
 
         def negative_price?(price)
           if price.present? && price < "0"
-            render json: ErrorSerializer.negative_price, status: 400
+            @valid_params = false
+            render json: ErrorSerializer.negative_price, status: 400 and return
           end
         end
-
+        
         def min_greater
           if @min_price.present? && @max_price.present?
             if @min_price.to_i > @max_price.to_i
-              render json: ErrorSerializer.min_greater, status: 400
+              @valid_params = false
+              render json: ErrorSerializer.min_greater, status: 400 and return
             end
           end
         end
-
+        
         def missing_query
           if !@name && !@min_price && !@max_price
-            render json: ErrorSerializer.missing_parameter, status: 400
+            @valid_params = false
+            render json: ErrorSerializer.missing_parameter, status: 400 and return
           end
         end
-
+        
         def blank_query
-          if @name.blank? || @min_price.blank? || @max_price.blank?
-            render json: ErrorSerializer.missing_parameter, status: 400
+          if @name == "" || @min_price == "" || @max_price == ""
+            @valid_params = false
+            render json: ErrorSerializer.missing_parameter, status: 400 and return
           end
         end
 
