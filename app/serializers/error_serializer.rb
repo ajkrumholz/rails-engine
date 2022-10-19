@@ -4,6 +4,10 @@ class ErrorSerializer
     handle_error("Merchant could not be located")
   end
 
+  def self.no_item
+    handle_error("Item could not be located")
+  end
+
   def self.missing_parameter
     handle_error("Parameter cannot be missing")
   end

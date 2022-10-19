@@ -88,7 +88,7 @@ RSpec.describe 'Item Searches' do
         it 'returns an error if a negative price is specified' do
           get "#{uri}?min_price=-5"
           expect(json[:data][:error]).to include("Query price must be at least 0")
-          get "#{uri}?min_price=-5"
+          get "#{uri}?max_price=-5"
           expect(json[:data][:error]).to include("Query price must be at least 0")
           get "#{uri}?min_price=-5&max_price=10"
           expect(json[:data][:error]).to include("Query price must be at least 0")
@@ -97,6 +97,11 @@ RSpec.describe 'Item Searches' do
         it 'returns an error if min_price > max_price' do
           get "#{uri}?min_price=10&max_price=5"
           expect(json[:data][:error]).to include("Max price must be greater than min price")
+        end
+
+        it 'returns an error if no item matches' do
+          get "#{uri}?min_price=60&max_price=600"
+          expect(json[:data][:error]).to include("Item could not be located")
         end
       end
     end

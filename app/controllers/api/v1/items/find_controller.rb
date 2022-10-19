@@ -28,7 +28,11 @@ module Api
                   result = Item.where("unit_price between ? and ?", params[:min_price], params[:max_price])
                 end
               end
-              render json: ItemSerializer.new(result)
+              if result.empty?
+                render json: ErrorSerializer.no_item
+              else
+                render json: ItemSerializer.new(result)
+              end
             end
           elsif params[:max_price].present? || params[:min_price].present?
             render json: ErrorSerializer.invalid_search and return
