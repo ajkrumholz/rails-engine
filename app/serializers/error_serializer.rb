@@ -5,9 +5,11 @@ class ErrorSerializer
   end
 
   def self.no_item
-    handle_error("Item could not be located")
+    { data: [],
+      message: "Item could not be located"
+    }
   end
-
+  
   def self.missing_parameter
     handle_error("Parameter cannot be missing")
   end
@@ -17,7 +19,10 @@ class ErrorSerializer
   end
 
   def self.negative_price
-    handle_error("Query price must be at least 0")
+    # handle_error("Query price must be at least 0")
+    { data: [],
+      error: "Query price must be at least 0"
+    }
   end
 
   def self.min_greater
