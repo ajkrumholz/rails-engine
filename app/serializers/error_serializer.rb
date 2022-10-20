@@ -4,9 +4,9 @@ class ErrorSerializer
     handle_error("Merchant could not be located")
   end
 
-  def self.no_item
+  def self.no_content
     { data: [],
-      message: "Item could not be located"
+      message: "Content could not be located"
     }
   end
   
