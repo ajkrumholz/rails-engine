@@ -6,36 +6,31 @@ module Api
                 
         def index
           if params_valid?
-            if name_query?
-              result = Item.name_query(@name)
-            elsif min_query?
-              result = Item.min_query(@min_price)
-            elsif max_query?
-              result = Item.max_query(@max_price)
-            elsif range_query?
-              result = Item.range_query(@min_price, @max_price)
-            end
+            result = search
             render json: ItemSerializer.new(result), status: 200
           end
         end
 
         def show
           if params_valid?
-            if name_query?
-              result = Item.name_query(@name)
-            elsif min_query?
-              result = Item.min_query(@min_price)
-            elsif max_query?
-              result = Item.max_query(@max_price)
-            elsif range_query?
-              result = Item.range_query(@min_price, @max_price)
-            end
-            render json: ItemSerializer.new(result.first), status: 200
+            result = search.first
+            render json: ItemSerializer.new(result), status: 200
           end
         end
 
         private
-
+        def search
+          if name_query?
+            result = Item.name_query(@name)
+          elsif min_query?
+            result = Item.min_query(@min_price)
+          elsif max_query?
+            result = Item.max_query(@max_price)
+          elsif range_query?
+            result = Item.range_query(@min_price, @max_price)
+          end
+        end
+        
         def set_vars
           @name = params[:name]
           @min_price = params[:min_price]
