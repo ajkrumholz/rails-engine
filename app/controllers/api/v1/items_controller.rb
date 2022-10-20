@@ -1,56 +1,56 @@
 module Api
   module V1
     class ItemsController < ApplicationController
+      before_action :set_item, only: %i(show destroy update)
+      before_action :set_merchant, only: %i(create)
+
       def index
-        items = ItemSerializer.new(Item.all)
-        render_json(items)
+        render_json(ItemSerializer.new(Item.all))
       end
 
       def show
-        item = ItemSerializer.new(Item.find(params[:id]))
-        render_json(item)
+        render_json(ItemSerializer.new(@item))
       end
 
       def create
-        merchant = Merchant.find(params[:item][:merchant_id])
-        item = merchant.items.create(item_params)
+        item = @merchant.items.create(item_params)
         new_item = ItemSerializer.new(item)
         if item.save
-          render json: new_item.serializable_hash, status: 201
+          render json: new_item, status: 201
         end
       end
 
       def destroy
-        item = Item.find(params[:id])
-        item_to_delete = ItemSerializer.new(item)
-        item.destroy
-        render json: item_to_delete.serializable_hash
+        item_to_delete = ItemSerializer.new(@item)
+        @item.destroy
+        render json: item_to_delete
       end
 
       def update
-        item = Item.find(params[:id])
-        merchant_id = params[:item][:merchant_id]
-        if merchant_id
-          merchant = Merchant.find(merchant_id)
-        else
-          merchant = item.merchant
-        end
-
-        if !item || !merchant
-          render json: {data: nil}, status: 404
-        end
-
-        item.update(item_params)
-        if item.save
-          serializer = ItemSerializer.new(item)
-          render_json(serializer)
+        valid_merchant
+        @item.update(item_params)
+        if @item.save
+          render_json(ItemSerializer.new(@item))
         end
       end
 
       private
+      def set_item
+        @item = Item.find(params[:id])
+      end
+
+      def set_merchant
+        @merchant = Merchant.find(params[:item][:merchant_id])
+      end
 
       def item_params
         params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+      end
+
+      def valid_merchant
+        if params[:item][:merchant_id].present?
+          set_merchant
+        end
       end
 
       def render_json(object)

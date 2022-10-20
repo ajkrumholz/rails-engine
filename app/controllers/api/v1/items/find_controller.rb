@@ -8,7 +8,7 @@ module Api
           if params_valid?
             result = search
             if result.empty?
-              render json: ErrorSerializer.no_content
+              render json: ErrorSerializer.no_item
             else
               render json: ItemSerializer.new(result), status: 200
             end
@@ -19,7 +19,7 @@ module Api
           if params_valid?
             result = search
             if result.empty?
-              render json: ErrorSerializer.no_content
+              render json: ErrorSerializer.no_item
             else
               render json: ItemSerializer.new(result.first), status: 200
             end

@@ -8,7 +8,7 @@ module Api
           if valid_params?
             result = merchant_search
             if result.nil?
-              render json: ErrorSerializer.no_content
+              render json: ErrorSerializer.no_merchant
             else
               render json: MerchantSerializer.new(result)
             end
@@ -19,7 +19,7 @@ module Api
           if valid_params?
             result = merchant_search.first
             if result.nil?
-              render json: ErrorSerializer.no_content
+              render json: ErrorSerializer.no_merchant
             else
             render json: MerchantSerializer.new(result)
             end

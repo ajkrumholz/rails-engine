@@ -94,7 +94,8 @@ RSpec.describe "Items", type: :request do
     let!(:merchant) { create :merchant }
     let!(:item) { create :item, merchant: merchant }
 
-    let!(:item_params) { { name: 'Sonic Hamburger Milkshake' } }
+    let!(:item_params) { { name: 'Sonic Hamburger Milkshake', merchant_id: merchant.id, unit_price: item.unit_price, description: item.description } }
+
     let!(:headers) { { "CONTENT_TYPE" => 'application/json' } }
 
     it 'updates an attribute for an item' do
@@ -106,9 +107,15 @@ RSpec.describe "Items", type: :request do
 
     it 'will return 404 if nonexistent id is provided' do
       put "/api/v1/items/10402941", headers: headers, params: JSON.generate(item: item_params)
-
       expect(response).to have_http_status(404)
       expect(json[:message]).to eq "Couldn't find Item with 'id'=10402941"
+    end
+
+    it 'works with partial data' do
+      item_params = { unit_price: 10.99 }
+      put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+      
+      expect(response).to have_http_status(200)
     end
 
     it 'will return 404 if bad merchant id provided' do

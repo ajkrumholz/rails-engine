@@ -1,11 +1,14 @@
 class ErrorSerializer
 
   def self.no_merchant
-    handle_error("Merchant could not be located")
+    { data: {},
+      message: "Content could not be located",
+      error: nil
+    }
   end
 
-  def self.no_content
-    { data: {},
+  def self.no_item
+    { data: [],
       message: "Content could not be located",
       error: nil
     }
