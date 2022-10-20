@@ -7,14 +7,22 @@ module Api
         def index
           if params_valid?
             result = search
-            render json: ItemSerializer.new(result), status: 200
+            if result.empty?
+              render json: ErrorSerializer.no_content
+            else
+              render json: ItemSerializer.new(result), status: 200
+            end
           end
         end
 
         def show
           if params_valid?
-            result = search.first
-            render json: ItemSerializer.new(result), status: 200
+            result = search
+            if result.empty?
+              render json: ErrorSerializer.no_content
+            else
+              render json: ItemSerializer.new(result.first), status: 200
+            end
           end
         end
 

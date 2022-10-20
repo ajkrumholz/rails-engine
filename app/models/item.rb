@@ -11,14 +11,14 @@ class Item < ApplicationRecord
   end
 
   def self.min_query(min_price)
-    Item.where("unit_price >= ?", min_price)
+    Item.where("unit_price >= ?", min_price).order(:name)
   end
 
   def self.max_query(max_price)
-    Item.where("unit_price <= ?", max_price)
+    Item.where("unit_price <= ?", max_price).order(:name)
   end
 
   def self.range_query(min_price, max_price)
-    Item.where("unit_price between ? and ?", min_price, max_price)
+    Item.where("unit_price between ? and ?", min_price, max_price).order(:name)
   end
 end

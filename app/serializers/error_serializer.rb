@@ -5,8 +5,9 @@ class ErrorSerializer
   end
 
   def self.no_content
-    { data: [],
-      message: "Content could not be located"
+    { data: {},
+      message: "Content could not be located",
+      error: nil
     }
   end
   
@@ -19,7 +20,6 @@ class ErrorSerializer
   end
 
   def self.negative_price
-    # handle_error("Query price must be at least 0")
     { data: [],
       error: "Query price must be at least 0"
     }
