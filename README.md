@@ -1,24 +1,87 @@
-# README
+## Rails Engine Lite
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+rails-engine-lite is a basic REST API that can provide information about items and merchants
 
-Things you may want to cover:
+[GitHub repository link](https://github.com/ajkrumholz/rails-engine)
 
-* Ruby version
+### Version information
+  Ruby 2.7.4
+  Rails 5.2.8.1
+  PostgreSQL 1.4.4
 
-* System dependencies
+### Setup
+  run the following terminal commands after pulling down the repo
+    bundle install
+    rails db:{create,migrate,seed}
 
-* Configuration
+### Data
+  Data used to seed the environment can be found here:
+    /db/data/rails-engine-development.pgdump
 
-* Database creation
+### Test suite(RSpec)
+  run tests in terminal using:
+    bundle exec rspec
 
-* Database initialization
+#### rails-engine-lite allows users to make HTTP requests to a number of endpoints in the API, including features to search resources by a variety of attributes.
 
-* How to run the test suite
+### Merchant Endpoints
 
-* Services (job queues, cache servers, search engines, etc.)
+- get /app/v1/merchants
 
-* Deployment instructions
+  Retrieve all merchants in database
 
-* ...
+- get /app/v1/merchants/{merchant_id}
+
+  Retrieve basic attributes for one merchant
+
+  #### Path Parameters
+    - merchant_id       integer       required
+
+- get /app/v1/merchants/find?name={string}
+
+  Retrieve a single merchant matching a query string to all or part of a merchant's name
+
+  Query String 
+    - name        string       -required
+
+- get /app/v1/merchants/find_all?name={string}
+
+  Retrieve all merchants matching a query string to all or part of a merchant's name
+
+  Query String 
+    - name        string       -required
+
+- get /app/v1/merchants/{merchant_id}/items
+
+  Retrieve all items belonging to a merchant, given a merchant's ID
+
+  Path Parameters
+    - merchant_id       integer       required
+
+### Item Endpoints
+
+- get /app/v1/items
+
+  Retrieve all items in database
+
+- get /app/v1/items/{item_id}
+
+  Retrieve a single item in the database by Item ID
+
+  Path Parameters
+    - item_id       integer       required
+
+- post /app/v1/items/
+
+  Create a new Item in the database
+
+  Headers
+    - { CONTENT_TYPE } => "application/json"
+
+  Params
+    - name          string        required
+    - description   string        required
+    - unit_price    decimal       required
+    - merchant_id   integer       required
+
+- 

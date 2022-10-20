@@ -22,8 +22,11 @@ module Api
 
       def destroy
         item_to_delete = ItemSerializer.new(@item)
-        @item.destroy
-        render json: item_to_delete
+        invoices = @item.invoices
+        if @item.destroy
+          invoices.each { |invoice| invoice.destroy_if_empty }
+        end
+          render json: item_to_delete
       end
 
       def update
