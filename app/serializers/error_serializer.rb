@@ -18,18 +18,10 @@ class ErrorSerializer
     handle_error("Parameter cannot be missing")
   end
 
-  def self.no_match(name)
-    handle_error("Could not locate resource with name like #{name}")
-  end
-
   def self.negative_price
     { data: [],
       error: "Query price must be at least 0"
     }
-  end
-
-  def self.min_greater
-    handle_error("Max price must be greater than min price")
   end
 
   def self.invalid_search
