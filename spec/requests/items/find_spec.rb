@@ -34,10 +34,9 @@ RSpec.describe 'Item Searches' do
       end
 
       describe 'sad paths' do
-        it 'returns an error if an item cannot be found' do
+        it 'an empty array if no item can be found' do
           get "#{uri}?name=cliff"
           expect(json[:data]).to be_empty
-          expect(json[:message]).to include("Item could not be located")
         end
         
         it 'returns an error if missing parameters' do
@@ -97,16 +96,9 @@ RSpec.describe 'Item Searches' do
           expect(response).to have_http_status(400)
         end
 
-        it 'returns an error if min_price > max_price' do
-          get "#{uri}?min_price=12&max_price=5"
-          expect(json[:data][:error]).to include("Max price must be greater than min price")
-          expect(response).to have_http_status(400)
-        end
-
-        it 'returns an error if no item matches' do
+        it 'return an empty array if no item matches' do
           get "#{uri}?min_price=60&max_price=600"
           expect(json[:data]).to be_empty
-          expect(json[:message]).to include("Item could not be located")
         end
       end
     end
