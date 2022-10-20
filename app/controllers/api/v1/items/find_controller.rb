@@ -19,7 +19,7 @@ module Api
           if params_valid?
             result = search
             if result.empty?
-              render json: ErrorSerializer.no_item
+              render json: ErrorSerializer.no_single_item
             else
               render json: ItemSerializer.new(result.first), status: 200
             end
@@ -55,6 +55,9 @@ module Api
           elsif missing_query? || blank_query?
             render json: ErrorSerializer.missing_parameter, status: 400
             return false
+          elsif min_greater
+            render json: ErrorSerializer.min_greater, status: 400
+            return false
           else
             return true
           end
@@ -68,11 +71,11 @@ module Api
           price.present? && price.to_i < 0
         end
         
-        # def min_greater
-        #   if @min_price.present? && @max_price.present?
-        #     @min_price.to_i > @max_price.to_i
-        #   end
-        # end
+        def min_greater
+          if @min_price.present? && @max_price.present?
+            @min_price.to_i > @max_price.to_i
+          end
+        end
         
         def missing_query?
           @name.nil? && @min_price.nil? && @max_price.nil?

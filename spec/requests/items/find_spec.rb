@@ -19,7 +19,7 @@ RSpec.describe 'Item Searches' do
       it 'if no item is found' do
         get "#{uri}?name=bart"
         expect(response).to have_http_status(200)
-        expect(json[:data]).to be_empty
+        expect(json[:data]).to eq({})
       end
     end
 
@@ -37,6 +37,11 @@ RSpec.describe 'Item Searches' do
 
         get "#{uri}?min_price=5&max_price=20"
         expect(json[:data][:attributes][:name]).to eq(item_1.name)
+      end
+
+      it 'returns an error if min_price > max_price' do 
+        get "#{uri}?min_price=20&max_price=10"
+        expect(response).to have_http_status(400)
       end
     end
   end
