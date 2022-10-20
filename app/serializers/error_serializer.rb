@@ -1,12 +1,16 @@
 class ErrorSerializer
 
   def self.no_merchant
-    handle_error("Merchant could not be located")
+    { data: {},
+      message: "Content could not be located",
+      error: nil
+    }
   end
 
   def self.no_item
     { data: [],
-      message: "Item could not be located"
+      message: "Content could not be located",
+      error: nil
     }
   end
   
@@ -19,7 +23,6 @@ class ErrorSerializer
   end
 
   def self.negative_price
-    # handle_error("Query price must be at least 0")
     { data: [],
       error: "Query price must be at least 0"
     }

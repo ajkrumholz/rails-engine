@@ -2,26 +2,47 @@ module Api
   module V1
     module Merchants
       class FindController < ApplicationController
+        before_action :set_vars
+
         def index
-          if !params[:name].present?
-            render json: ErrorSerializer.missing_parameter
-          else
-            found_merchants = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name)
-            render json: MerchantSerializer.new(found_merchants)
+          if valid_params?
+            result = merchant_search
+            if result.nil?
+              render json: ErrorSerializer.no_merchant
+            else
+              render json: MerchantSerializer.new(result)
+            end
           end
         end
 
         def show
-          if !params[:name].present?
-            render json: ErrorSerializer.missing_parameter
-          else
-            found_merchant = Merchant.where("name ILIKE ?", "%#{params[:name]}%").order(:name).first
-            if found_merchant.nil?
-              render json: ErrorSerializer.no_match(params[:name])
+          if valid_params?
+            result = merchant_search.first
+            if result.nil?
+              render json: ErrorSerializer.no_merchant
             else
-              render json: MerchantSerializer.new(found_merchant)
+            render json: MerchantSerializer.new(result)
             end
           end
+        end
+
+        private
+
+        def merchant_search
+          Merchant.search(@name)
+        end
+
+        def valid_params?
+          if @name.nil? || @name == ""
+            render json: ErrorSerializer.missing_parameter, status: 400
+            return false
+          else
+            true
+          end
+        end
+
+        def set_vars
+          @name = params[:name]
         end
       end
     end
