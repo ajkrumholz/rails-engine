@@ -54,5 +54,12 @@ RSpec.describe 'Merchant searches' do
       expect(name_array).to include(aardvark.name, gorilla.name, elephant.name)
       expect(name_array).not_to include(giraffe.name)
     end
+
+    it 'returns an empty array if no merchants match' do
+      get '/api/v1/merchants/find_all?name=boris'
+      expect(response).to be_successful
+      expect(json).to have_key(:data)
+      expect(json[:data]).to eq([])
+    end
   end
 end

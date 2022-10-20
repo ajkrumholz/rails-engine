@@ -7,11 +7,7 @@ module Api
         def index
           if valid_params?
             result = merchant_search
-            if result.nil?
-              render json: ErrorSerializer.no_merchant
-            else
-              render json: MerchantSerializer.new(result)
-            end
+            render json: MerchantSerializer.new(result)
           end
         end
 

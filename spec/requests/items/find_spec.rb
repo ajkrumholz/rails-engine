@@ -1,6 +1,46 @@
 require 'rails_helper'
 
 RSpec.describe 'Item Searches' do
+  describe 'get item/find' do
+    let!(:merchant) { create :merchant}
+    let!(:uri) { '/api/v1/items/find'}
+
+    describe 'search name' do
+      let!(:item_1) { create :item, name: 'sandy beach', description: 'granules', merchant: merchant}
+      let!(:item_2) { create :item, name: 'rocks', description: 'little pebbles', merchant: merchant }
+
+      it 'returns a single item matching the fragment' do
+        get "#{uri}?name=sand"
+        expect(response).to have_http_status(200)
+        expect(json[:data]).not_to be_empty
+        expect(json[:data][:attributes][:name]).to eq(item_1.name)
+      end
+
+      it 'if no item is found' do
+        get "#{uri}?name=bart"
+        expect(response).to have_http_status(200)
+        expect(json[:data]).to be_empty
+      end
+    end
+
+    describe 'search price' do
+      let!(:item_1) { create :item, merchant: merchant, unit_price: 10.99}
+      let!(:item_2) { create :item, merchant: merchant, unit_price: 20.99}
+      let!(:item_3) { create :item, merchant: merchant, unit_price: 4.99}
+
+      it 'returns a single item matching the characteristics' do
+        get "#{uri}?min_price=15"
+        expect(json[:data][:attributes][:name]).to eq(item_2.name)
+
+        get "#{uri}?max_price=5"
+        expect(json[:data][:attributes][:name]).to eq(item_3.name)
+
+        get "#{uri}?min_price=5&max_price=20"
+        expect(json[:data][:attributes][:name]).to eq(item_1.name)
+      end
+    end
+  end
+
   describe 'get item/find_all' do
     let!(:merchant) { create :merchant}
     let!(:other_merchant) { create :merchant }
