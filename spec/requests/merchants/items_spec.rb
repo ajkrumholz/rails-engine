@@ -26,8 +26,8 @@ RSpec.describe "Merchant/Items", type: :request do
     it 'does not return items if given a bad merchant id' do
       get '/api/v1/merchants/1242991922/items'
       expect(response).to have_http_status(404)
-      expect(json).to have_key(:error)
-      expect(json[:message]).to eq("Could not complete query")
+      expect(json).to have_key(:data)
+      expect(json[:data][:message]).to eq("Could not complete query")
     end
   end
 end
