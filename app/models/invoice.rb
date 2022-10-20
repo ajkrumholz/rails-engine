@@ -3,9 +3,14 @@ class Invoice < ApplicationRecord
   
   belongs_to :customer
   belongs_to :merchant
-  has_many :invoice_items
+  has_many :invoice_items, dependent: :destroy
   has_many :items, through: :invoice_items
 
   validates_presence_of :status
-  validates_inclusion_of :status, in: 0..2
+
+  def destroy_if_empty
+    if items.empty?
+      destroy
+    end
+  end
 end

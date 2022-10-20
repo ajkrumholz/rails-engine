@@ -14,8 +14,21 @@ class ErrorSerializer
     }
   end
   
+  def self.no_single_item
+    { data: {},
+      message: "Content could not be located",
+      error: nil
+    }
+  end
+
   def self.missing_parameter
     handle_error("Parameter cannot be missing")
+  end
+
+  def self.min_greater
+    { data: [],
+      error: "Min_price cannot be greater than max_price"
+    }
   end
 
   def self.negative_price
