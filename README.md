@@ -223,3 +223,6 @@ bundle exec rspec
     get /app/v1/items/find_all?min_price=-5
     get /app/v1/items/find_all?min_price=15&max_price=10
 
+-----
+#### Roadmap
+This was a great early step towards understanding the inner workings of APIs. I feel like I gained a more thorough understanding of routing strategies and structural considerations during the project. In particular, learning how to execute endpoints like search functions while adhering to ReSTful routing practices will help me keep my code organized, predictable, and easier to maintain. <p> This is clearly a very basic example of what can be done with APIs when building from the ground up, and in the future if I return to this project I'll likely want to focus on the limitations of the current search function as a first point of improvement. There isn't any particular reason that the search shouldn't be more dynamic and better at filtering resources, but the short time we were given to deliver a working product made it necessary to get viable code up and running as quickly as possible.
